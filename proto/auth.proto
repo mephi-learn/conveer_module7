@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "dz7.homework.v1;dz7v1";
+
+service Homework {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Secret (SecretRequest) returns (SecretResponse);
+}
+
+message RegisterRequest {
+  string secret = 1;
+}
+
+message RegisterResponse {
+  string secret_id = 1;
+  string error = 2;
+}
+
+message SecretRequest {
+  string secret_id = 1;
+}
+
+message SecretResponse {
+  string secret = 1;
+  string error = 2;
+}
