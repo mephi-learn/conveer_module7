@@ -1,7 +1,8 @@
-docker-compose build
-docker compose up -d
+docker-compose игшдв
+docker-compose up -d
 
-docker run --rm hm7-sitnikov-client /app/client register MySecret
+curl http://localhost:55000/register?secret=MyiImportantSecret
+curl http://localhost:55000/secret?id=unknown
 
 
 docker compose down

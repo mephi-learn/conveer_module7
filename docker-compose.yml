@@ -1,4 +1,3 @@
-version: "3"
 services:
   server:
     image: hm7-sitnikov-server

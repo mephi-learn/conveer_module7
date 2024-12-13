@@ -113,9 +113,9 @@ func Register(param string) string {
 	}
 
 	if response.GetError() != "" {
-		return fmt.Sprintf("register failure: %s\n", response.GetError())
+		return fmt.Sprintf("ERROR: register failure: %s\n", response.GetError())
 	} else {
-		return fmt.Sprintf("register success, your secret_id = %s\n", response.GetSecretId())
+		return fmt.Sprintf("%s", response.GetSecretId())
 	}
 }
 
@@ -142,8 +142,8 @@ func Secret(param string) string {
 		grpclog.Fatalf("fail to dial: %v", err)
 	}
 	if response.GetError() != "" {
-		return fmt.Sprintf("receive failure: %s\n", response.GetError())
+		return fmt.Sprintf("ERROR: receive failure: %s\n", response.GetError())
 	} else {
-		return fmt.Sprintf("receive success, your secret: %s\n", response.GetSecret())
+		return fmt.Sprintf("%s\n", response.GetSecret())
 	}
 }
