@@ -1,0 +1,20 @@
+version: "3"
+services:
+  server:
+    image: hm7-sitnikov-server
+    build:
+      dockerfile: docker/server/Dockerfile
+    command: /app/server
+    ports:
+      - 53000:53000
+      - 53001:53001
+
+  client:
+    image: hm7-sitnikov-client
+    build:
+      dockerfile: docker/client/Dockerfile
+    command: /app/client init signal
+    depends_on:
+      - server
+    ports:
+      - 55000:55000

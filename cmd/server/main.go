@@ -4,6 +4,8 @@ import (
 	dz7v1 "dz7/proto/gen"
 	"fmt"
 	"net"
+	"os"
+	"strconv"
 
 	"github.com/google/uuid"
 	"golang.org/x/net/context"
@@ -12,21 +14,38 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ":53000")
+	registerPort := os.Getenv("REGISTER_PORT")
+	if num, err := strconv.Atoi(registerPort); err != nil || num > 65535 || num < 1024 {
+		registerPort = "53000"
+	}
+	secretPort := os.Getenv("SECRET_PORT")
+	if num, err := strconv.Atoi(secretPort); err != nil || num > 65535 || num < 1024 {
+		secretPort = "53001"
+	}
+
+	registerListener, err := net.Listen("tcp", ":"+registerPort)
+	secretListener, err := net.Listen("tcp", ":"+secretPort)
 
 	if err != nil {
 		grpclog.Fatalf("failed to listen: %v", err)
 	}
 
 	opts := []grpc.ServerOption{}
-	grpcServer := grpc.NewServer(opts...)
+	registerGrpcServer := grpc.NewServer(opts...)
+	SecretGrpcServer := grpc.NewServer(opts...)
+	srv := &server{Secrets: map[string]string{}}
+	dz7v1.RegisterRegisterServer(registerGrpcServer, srv)
+	go registerGrpcServer.Serve(registerListener)
+	dz7v1.RegisterSecretServer(SecretGrpcServer, srv)
+	go SecretGrpcServer.Serve(secretListener)
 
-	dz7v1.RegisterHomeworkServer(grpcServer, &server{Secrets: map[string]string{}})
-	grpcServer.Serve(listener)
+	stop := make(chan struct{})
+	<-stop
 }
 
 type server struct {
-	dz7v1.UnimplementedHomeworkServer
+	dz7v1.UnimplementedRegisterServer
+	dz7v1.UnimplementedSecretServer
 	Secrets map[string]string
 }
 
