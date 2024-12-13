@@ -54,7 +54,7 @@ hint="Собираем docker compose:"
 printexec "build_images" docker-compose build --no-cache
 
 hint="Запускаем docker compose в фоне:"
-printexec "run_images" docker-compose uo -d
+printexec "run_images" docker-compose up -d
 
 hint="Отображаем инструкцию:"
 printexec "help" curl http://localhost:55000/
